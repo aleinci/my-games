@@ -26,4 +26,9 @@ if (isset($row)) {
 				<p id="userN" name="userN" hidden="" >'.$row[1].'</p>
 				<p id="score" name="score" hidden="" >'.$row[2].'</p>
 			</div>';
+}else{
+	echo '	<div id ="player" hidden="">
+				<p id="userN" name="userN" hidden="" ></p>
+				<p id="score" name="score" hidden="" >0</p>
+			</div>';
 }

@@ -26,4 +26,9 @@ if (isset($row)) {
 			<p id="lvl" name="lvl" hidden="" >'.$row[2].'</p>
 			<p id="min" name="min" hidden="" >'.$row[3].'</p>
 			<p id="sec" name="sec" hidden="" >'.$row[4].'</p>';
+}else{
+	echo '<p id="userN" name="userN" hidden="" ></p>
+			<p id="lvl" name="lvl" hidden="" >0</p>
+			<p id="min" name="min" hidden="" >90</p>
+			<p id="sec" name="sec" hidden="" >60</p>';
 }

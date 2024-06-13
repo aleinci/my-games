@@ -32,4 +32,16 @@ if (isset($row)) {
 			<p id="stage7" name="stage7" hidden="" >'.$row[10].'</p>
 			<p id="stage8" name="stage8" hidden="" >'.$row[11].'</p>
 			<p id="stage9" name="stage9" hidden="" >'.$row[12].'</p>';
+}else{
+	echo '<p id="userN" name="userN" hidden="" ></p>
+		<p id="stage0" name="stage0" hidden="" >0</p>
+		<p id="stage1" name="stage1" hidden="" >0</p>
+		<p id="stage2" name="stage2" hidden="" >0</p>
+		<p id="stage3" name="stage3" hidden="" >0</p>
+		<p id="stage4" name="stage4" hidden="" >0</p>
+		<p id="stage5" name="stage5" hidden="" >0</p>
+		<p id="stage6" name="stage6" hidden="" >0</p>
+		<p id="stage7" name="stage7" hidden="" >0</p>
+		<p id="stage8" name="stage8" hidden="" >0</p>
+		<p id="stage9" name="stage9" hidden="" >0</p>';
 }

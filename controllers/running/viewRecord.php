@@ -24,4 +24,7 @@ $results = mysqli_query($connection, $consult);
 if (isset($row)) {
 	echo '<p id="userN" name="userN" hidden="" >'.$row[1].'</p>
 		<p id="score" name="score" hidden="" >'.$row[2].'</p>';
+}else{
+	echo '<p id="userN" name="userN" hidden="" ></p>
+		<p id="score" name="score" hidden="" >0</p>';
 }

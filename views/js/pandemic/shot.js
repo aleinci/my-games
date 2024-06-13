@@ -37,9 +37,7 @@ class Start extends MonoBehaviour
 	
 }
 
-//consejofacultadfadluz@gmail.com
-//planilla consinacion
-//documentos
+
 window.onblur = function() {
   state="close";
   stopMusic(sound.musicMM);

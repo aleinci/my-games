@@ -2,6 +2,8 @@ let camera = new Camera(ctx);
 let mode="menu";
 let dataLoading=0;
 let device ="";
+let isPlaying=false;
+let rememberMode = "";
 
 class Start extends MonoBehaviour{
 
@@ -120,6 +122,24 @@ function game(){
 
 		//Time.Fend();
 		
+}
+
+window.onblur = function() {
+  rememberMode = mode;
+  mode="close";
+  stopMusic(sound.mainMenu);
+  stopMusic(sound.play1);
+  stopMusic(sound.play2);
+  stopMusic(sound.victory1);
+  stopMusic(sound.victory2);
+  
+}
+window.onfocus = function() {
+   if (rememberMode == "playing") {
+   		mode = "pause";
+   }else{
+   	mode = rememberMode;
+   }
 }
 
 start = new Start();
