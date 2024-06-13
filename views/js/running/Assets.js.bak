@@ -1,0 +1,221 @@
+let images ={
+	money:{img:"", src:srcImg + "money.png",},
+	flash01:{img:"", src:srcImg + "particle/flash01.png"},
+	flash02:{img:"", src:srcImg + "particle/flash0_2.png"},
+	flash03:{img:"", src:srcImg + "particle/flash0_1.png"},
+	flash04:{img:"", src:srcImg + "particle/flash0_3.png"},
+	smoke01:{img:"", src:srcImg + "particle/smoke01.png"},
+
+	magnetSpark:{img:"", src:srcImg + "particle/magnet_spark.png"},
+	magnetShockwave:{img:"", src:srcImg + "particle/magnet_shockwave.png"},
+
+	invincible:{img:"", src:srcImg + "particle/invincible.png"},
+
+	spark:{img:"", src:srcImg + "particle/spark.png"},
+	impact:{img:"", src:srcImg + "particle/impact.png"},
+
+	cursorP:{img:"", src:srcImg + "particle/cursorP.png"},
+
+	stage:{img:"", src:srcImg + "stage/stage.png"},
+
+	enemy1:{img:"", src:srcImg + "enemies/enemy1.png"},
+	enemy2:{img:"", src:srcImg + "enemies/enemy2.png"},
+	enemy3:{img:"", src:srcImg + "enemies/enemy3.png"},
+	loading:{img:"", src:srcImg + "loading.jpg"},
+
+	mMenuBtn:{img:"", src:srcImg + "mainMenu/mainMenuBtn.png"},
+
+	shopcard:{img:"", src:srcImg + "shop/shopcard.png"},
+	
+	magnet:{img:"", src:srcImg + "shop/magnet.png"},
+}
+
+let sound = {
+	music:{sfx:"", src:srcSfx + "",},
+}
+
+
+function startMusic(music){
+	music.sfx.play();
+}
+
+function volumeSfx(music, volume){
+	music.sfx.volume = volume;
+}
+
+function stopMusic(music){
+	music.sfx.pause();
+	music.sfx.currentTime=0;
+}
+
+class LoadAssets
+{
+	constructor()
+	{
+		this.srcImg = "../img/covid/";
+		this.srcMsc = "../sfx/music/";
+		this.srcSfx = "../sfx/FX/";
+
+		this.assetsToLoad = [];
+		this.assetsImg = [];
+		this.assetsSnd = [];
+		this.assetsLoaded = 0;
+		this.alpha = 1;
+		this.press={
+			alpha:{current:1, max:0},
+			enable:true,
+		};
+	}
+
+
+
+	LoadImage=(image)=>
+	{
+		image.img = new Image();
+		image.img.src =image.src;
+		image.img.addEventListener("load", this.loadHandler, false);
+		this.assetsToLoad.push(image.img);
+		this.assetsImg.push(image.img);
+	}
+
+	LoadSound=(sound)=>
+	{
+		sound.sfx = new Audio(sound.src);
+	 	sound.sfx.addEventListener("loadedmetadata", this.loadHandler, false);
+	 	this.assetsToLoad.push(sound.sfx);
+	 	this.assetsSnd.push(sound.sfx)
+	}
+
+	mutedSound(bool){
+		for (let i in this.assetsSnd){
+			let sound = this.assetsSnd[i];
+
+			sound.muted=bool;
+		}
+	}
+
+	loadHandler=()=> 
+	{
+		this.assetsLoaded++;
+		console.log("Loading..."+this.assetsToLoad.length);
+		
+		    
+		if (this.assetsLoaded === this.assetsToLoad.length) 
+		{
+			console.log("All assets loaded");
+			
+			//if (started == undefined) {started = new Start();}
+			//else{started = new Start();}
+		}
+	}
+
+	LoadingScreen=()=> {//pantalla de carga
+		var color1 ="";//darkcolor
+		var color2 ="";//normalcolor
+
+		//cambiar color de la barra de carga
+		if (this.assetsLoaded < this.assetsToLoad.length*0.25) {
+			color1 ="#FF0000";
+			color2 ="#BB0000";
+		}
+		if (this.assetsLoaded >= this.assetsToLoad.length*0.25 && this.assetsLoaded < this.assetsToLoad.length*0.50) {
+			color1 ="#BB9600";
+			color2 ="#FFCD00";
+		}
+		if (this.assetsLoaded >= this.assetsToLoad.length*0.50 && this.assetsLoaded < this.assetsToLoad.length*0.75) {
+			color1 ="#93BB00";
+			color2 ="#C8FF00";
+		}
+		if (this.assetsLoaded >= this.assetsToLoad.length*0.75) {
+			color1 ="#30BB00";
+			color2 ="#23FF00";
+		}
+
+
+
+
+		ctx.save();
+
+		ctx.globalAlpha = this.alpha;
+		ctx.fillStyle = "black";
+		ctx.drawImage(images.loading.img,0,0,canvas.width, canvas.height);
+
+
+		ctx.restore();
+
+		ctx.save();
+		ctx.globalAlpha = this.alpha;
+		ctx.fillStyle="#022a44";
+		ctx.font = '25pt Bebas Neue';
+		ctx.textAlign = "center";
+
+		
+
+		if (this.assetsLoaded === this.assetsToLoad.length && this.press.enable) {
+			if (this.press.alpha.current >= 0.9) {this.press.alpha.max=0;}
+			if (this.press.alpha.current <= 0.1) {this.press.alpha.max=1;}
+
+			this.press.alpha.current=lerp(this.press.alpha.current, this.press.alpha.max, 0.1);
+			this.DetectingDevice();
+			ctx.save();
+			ctx.globalAlpha = this.press.alpha.current;
+			ctx.fillText("Press to Enter", canvas.width/2, 570 );
+			ctx.restore();
+		}else{
+			ctx.fillText("Loading... " + Math.floor(this.assetsLoaded/this.assetsToLoad.length*(100)) + "%",
+			canvas.width/2, 570 );
+		}
+		
+
+		ctx.restore();
+		
+	}
+
+	DetectingDevice()
+	{
+		if (device=="" && Input.mouseFire[0]) {
+			device = "pc";
+		}
+
+		if (device=="" && Input.touch[0]) {
+			device = "android";
+		}
+
+		if (device =="pc" && !Input.mouseFire[0] || device =="android" && !Input.touch[0]) {
+			this.press.enable=false;
+			//startMusic(sound.clickBtn);
+		}
+	}
+}
+
+let Assets = new LoadAssets();
+
+Assets.LoadImage(images.money);
+
+Assets.LoadImage(images.flash01);
+Assets.LoadImage(images.flash02);
+Assets.LoadImage(images.flash03);
+Assets.LoadImage(images.flash04);
+Assets.LoadImage(images.smoke01);
+
+Assets.LoadImage(images.magnetSpark);
+Assets.LoadImage(images.magnetShockwave);
+
+Assets.LoadImage(images.invincible);
+
+Assets.LoadImage(images.spark);
+Assets.LoadImage(images.impact);
+Assets.LoadImage(images.cursorP);
+
+Assets.LoadImage(images.stage);
+
+Assets.LoadImage(images.enemy1);
+Assets.LoadImage(images.enemy2);
+Assets.LoadImage(images.enemy3);
+
+Assets.LoadImage(images.loading);
+
+Assets.LoadImage(images.mMenuBtn);
+Assets.LoadImage(images.shopcard);
+
+Assets.LoadImage(images.magnet);

@@ -1,0 +1,173 @@
+function Instantiate_Shop()
+{
+	shop_menu = {	
+		invincible:new ShopCard(0,0,"buy",images.flash01.img),
+		life:new ShopCard(0,0,"buy",images.flash01.img),
+		magnet:new ShopCard(0,0,"buy",images.flash01.img),
+		rainMoney:new ShopCard(0,0,"buy",images.flash01.img),
+		hyperSpeed:new ShopCard(0,0,"buy",images.flash01.img),
+		itemNumber:5,//cantidad de items que hay en la tienda
+		
+		update:function(){},
+		camera:new Camera(ctx),
+		x:0,
+		y:0,
+	};
+	shop_menu.camera.zoomTo(400);
+
+	shop_menu.invincible.event=()=>{shopData("invincible");}
+
+	shop_menu.life.event=()=>{shopData("life");}
+
+	shop_menu.magnet.event=()=>{shopData("magnet");}
+
+	shop_menu.rainMoney.event=()=>{shopData("rainMoney");}
+	
+	shop_menu.hyperSpeed.event=()=>{shopData("hyperSpeed");}
+
+	shop_menu.update=()=>
+	{
+		let array = [shop_menu.invincible, shop_menu.life,
+		shop_menu.magnet, shop_menu.rainMoney, shop_menu.hyperSpeed];
+		
+		let size = 70;
+		let margin = 20;
+		let slotX =[-size-margin, 0, size+margin];
+		let slotY ={margin:size*2, ceil:0};
+		
+		pos(array[0],slotX[0], slotY.margin * 0);
+		pos(array[1],slotX[1], slotY.margin * 0);
+		pos(array[2],slotX[2], slotY.margin * 0);
+		
+		pos(array[3],slotX[0], slotY.margin * 1);
+		pos(array[4],slotX[1], slotY.margin * 1);
+		
+		function pos(card,x,y)
+		{
+			card.x = x;
+			card.y = y;
+		}
+		
+		shop_menu.camera.begin();
+
+			shop_menu.invincible.update();
+			shop_menu.life.update();
+			shop_menu.magnet.update();
+			shop_menu.rainMoney.update();
+			shop_menu.hyperSpeed.update();
+
+		shop_menu.camera.end();
+	}
+}
+
+class ShopCard
+{
+	constructor(x,y,type, itemImg)
+	{
+		this.x = x;
+		this.y = y;
+		this.type = type; //"upgrade" or "buy"
+		this.scale = 2;
+		this.img = images.shopcard.img;
+		this.itemImg = itemImg;
+
+		this.buttom = {x:0, y:30, w:50, h:15};
+		this.onClick= false;
+	}
+
+	draw()
+	{
+		let scale = 1;
+		
+
+		//card base
+		drawing(this.x + 0, this.y + 0, 70, 92, 0,0, this.img);
+		
+		//card item
+		drawing(this.x + 0, this.y - 20, 40, 40, 70,0, this.img);
+
+		//item image
+		ctx.save();
+		ctx.translate(this.x + 0, this.y - 20 );
+		ctx.drawImage(this.itemImg, 38/-2, 38/-2, 38, 38);
+		ctx.restore();
+
+		//card item lvl
+		drawing(this.x + 0, this.y - 3.5, 40, 7, 70,40, this.img);
+
+		//card buttom
+		drawing(this.x + 0, this.y + 30, 50, 15, 70,47, this.img);
+
+		
+
+		function drawing(x,y, width, height, ix, iy, img)
+		{
+			ctx.save();
+			ctx.translate(x , y );
+			ctx.scale(scale, scale)
+			ctx.drawImage(img, ix, iy, width, height, 
+				width/-2, height/-2, width , height )
+			ctx.restore();
+		}
+	}
+
+
+    pc()
+    {
+    	let mouse = shop_menu.camera.screenToWorld(Input.mousePosition.x, Input.mousePosition.y);
+    	let btn = {x:this.buttom.x + this.x, y:this.buttom.y + this.y};
+
+    	let overbutton = mouse.x > btn.x - this.buttom.w/2 &&
+    		mouse.x < btn.x + this.buttom.w/2 &&
+    		mouse.y > btn.y - this.buttom.h/2 &&
+    		mouse.y < btn.y + this.buttom.h/2;
+
+    	if (overbutton && Input.mouseFire[0] && !this.onClick) {this.onClick = true;}
+    	if (overbutton && !Input.mouseFire[0] && this.onClick) 
+    	{
+    		this.onClick = false;
+    		this.event();
+    		console.log("dentro del boton");
+    	}
+    	else if(!Input.mouseFire[0] && this.onClick){console.log("fuera del boton"); this.onClick = false; }
+
+    }
+
+    android()
+    {
+    	//for (var i = 0; i < Input.touchCount; i++) 
+    	//{
+			let j = Input.touchPosition[0];
+
+	    	let touch = shop_menu.camera.screenToWorld(j.x, j.y);
+	    	let btn = {x:this.buttom.x + this.x, y:this.buttom.y + this.y};
+
+	    	let overbutton = touch.x > btn.x - this.buttom.w/2 &&
+	    		touch.x < btn.x + this.buttom.w/2 &&
+	    		touch.y > btn.y - this.buttom.h/2 &&
+	    		touch.y < btn.y + this.buttom.h/2;
+
+	    	if (overbutton && Input.touch[0] && !this.onClick) {this.onClick = true;}
+	    	if (overbutton && !Input.touch[0] && this.onClick) 
+	    	{
+	    		this.onClick = false;
+	    		this.event();
+	    	}
+	    	else if(!Input.touch[0] && this.onClick){this.onClick = false; }
+    	//}
+    }
+
+    clickbuttom()
+    {
+    	if (device == "pc") { this.pc(); }
+    	else{ this.android(); }
+    }
+    
+    event(){}
+	
+	update()
+	{
+		this.clickbuttom();
+		this.draw();
+	}
+}
